@@ -1,0 +1,137 @@
+/* Cloche en haut : même style neutre que le bouton indicateurs (2 v) */
+#atm-alm-btn {
+  position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  height: 24px; min-width: 28px; padding: 0 7px; margin-left: 6px;
+  border-radius: 7px; border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06); color: var(--txt, #e5e7eb);
+  font-size: 11px; font-weight: 800; cursor: pointer;
+}
+#atm-alm-btn.has-alm {
+  border-color: color-mix(in srgb, var(--acc, #e11d74) 65%, transparent);
+  background: color-mix(in srgb, var(--acc, #e11d74) 18%, rgba(16,22,38,.45));
+  color: #fff;
+}
+#atm-alm-btn .alm-cnt {
+  min-width: 15px; height: 15px; padding: 0 4px; border-radius: 99px;
+  background: var(--acc, #e11d74); color: #fff; font-size: 9.5px; font-weight: 900;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+html.atm-light-ui #atm-alm-btn {
+  border-color: rgba(15,23,42,.15); background: rgba(15,23,42,.06); color: #0f172a;
+}
+
+/* Onglets Dossiers : barre segmentée identique à Tous / Métaux / Crypto */
+.alm-folders {
+  display: flex; gap: 5px; overflow-x: auto; padding: 4px; margin-bottom: 10px;
+  border-radius: 13px; border: 1px solid rgba(255,255,255,.12);
+  background: rgba(16,22,38,.44); scrollbar-width: none;
+}
+.alm-folders::-webkit-scrollbar { display: none; }
+.alm-ftab {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 11px; border-radius: 9px; border: 1px solid transparent;
+  background: transparent; color: var(--sub, #cbd5e1);
+  font-size: 11.5px; font-weight: 800; cursor: pointer;
+}
+.alm-ftab.on {
+  border-color: color-mix(in srgb, var(--acc, #e11d74) 65%, transparent);
+  background: color-mix(in srgb, var(--acc, #e11d74) 22%, rgba(20,24,38,.45));
+  color: #fff;
+}
+html.atm-light-ui .alm-folders { background: rgba(255,255,255,.72); border-color: rgba(15,23,42,.12); }
+html.atm-light-ui .alm-ftab { color: #475569; }
+html.atm-light-ui .alm-ftab.on { color: #0f172a; background: color-mix(in srgb, var(--acc, #2563eb) 16%, #fff); }
+
+/* Cartes, champs et boutons : verre neutre identique à Marchés & Actifs */
+.alm-hdr-t { display: inline-flex; align-items: center; gap: 7px; color: inherit; }
+.alm-card, .alm-row {
+  border-radius: 13px; border: 1px solid rgba(255,255,255,.12);
+  background: rgba(16,22,38,.44);
+}
+.alm-card { padding: 10px; margin-bottom: 10px; }
+.alm-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.alm-row.done { opacity: .52; }
+.alm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 7px; }
+.alm-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 7px 0; }
+.alm-qbtn, .alm-cond-btn, .alm-mini {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 8px 7px; border-radius: 10px; border: 1px solid rgba(255,255,255,.13);
+  background: rgba(255,255,255,.05); color: inherit; font-size: 11px; font-weight: 800; cursor: pointer;
+}
+.alm-mini { padding: 5px 8px; border-radius: 8px; }
+.alm-cond-btn.on {
+  border-color: color-mix(in srgb, var(--acc, #e11d74) 70%, transparent) !important;
+  background: color-mix(in srgb, var(--acc, #e11d74) 24%, rgba(20,24,38,.50)) !important;
+  color: #fff !important;
+}
+.alm-inp {
+  width: 100%; box-sizing: border-box; padding: 10px 12px; border-radius: 11px;
+  border: 1px solid rgba(255,255,255,.14); background: rgba(10,14,24,.45);
+  color: inherit; font-size: 13px; font-weight: 800; outline: none;
+}
+.alm-add {
+  width: 100%; padding: 11px; border-radius: 11px; margin-top: 8px;
+  border: 1px solid color-mix(in srgb, var(--acc, #e11d74) 75%, transparent);
+  background: color-mix(in srgb, var(--acc, #e11d74) 30%, rgba(20,24,38,.70));
+  color: #fff; font-size: 12.5px; font-weight: 900; cursor: pointer;
+}
+.alm-tag {
+  display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 99px;
+  background: color-mix(in srgb, var(--acc, #e11d74) 25%, transparent);
+  border: 1px solid color-mix(in srgb, var(--acc, #e11d74) 55%, transparent);
+  color: #fff; font-size: 9.5px; font-weight: 800; margin-right: 6px;
+}
+.alm-acts { display: flex; align-items: center; gap: 5px; }
+
+html.atm-light-ui .alm-card, html.atm-light-ui .alm-row, html.atm-light-ui .alm-qbtn,
+html.atm-light-ui .alm-cond-btn, html.atm-light-ui .alm-mini, html.atm-light-ui .alm-inp {
+  background: rgba(255,255,255,.78); border-color: rgba(15,23,42,.13); color: #0f172a;
+}
+html.atm-light-ui .alm-tag { color: #0f172a; }
+html.atm-light-ui .alm-add { background: var(--acc, #0f172a); color: #fff; border-color: transparent; }
+
+/* Bouton + et barre ALERTE sur le graphique : verre neutre + accent du thème */
+#atm-qa-line {
+  position: absolute; left: 0; right: 0; height: 0; pointer-events: none; z-index: 42;
+  border-top: 1px dashed color-mix(in srgb, var(--acc, #e2e8f0) 80%, #fff); display: none;
+}
+#atm-qa-plus {
+  position: absolute; z-index: 46; width: 27px; height: 27px; border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,.26); background: rgba(12,16,28,.82);
+  color: #f8fafc; display: none; align-items: center; justify-content: center;
+  transform: translateY(-50%); cursor: pointer; padding: 0; backdrop-filter: blur(8px);
+}
+#atm-qa-plus.open { background: var(--acc, #e11d74); border-color: rgba(255,255,255,.55); color: #fff; }
+#atm-qa-bar {
+  position: absolute; z-index: 47; display: none; align-items: center; gap: 5px;
+  padding: 4px 5px 4px 6px; border-radius: 11px; transform: translateY(-50%);
+  background: rgba(12,16,28,.82); backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,.18); white-space: nowrap;
+}
+.qa-go {
+  display: inline-flex; align-items: center; gap: 5px; padding: 6px 10px; border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--acc, #e11d74) 70%, transparent);
+  background: color-mix(in srgb, var(--acc, #e11d74) 28%, rgba(20,24,38,.70));
+  color: #fff; font-size: 11px; font-weight: 900; cursor: pointer;
+}
+.qa-px { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 800; }
+.qa-ic {
+  width: 26px; height: 26px; border-radius: 8px; border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.07); color: #e2e8f0; display: inline-flex;
+  align-items: center; justify-content: center; cursor: pointer; padding: 0;
+}
+html.atm-light-ui #atm-qa-plus, html.atm-light-ui #atm-qa-bar, html.atm-light-ui .qa-ic {
+  background: rgba(255,255,255,.90); border-color: rgba(15,23,42,.18); color: #0f172a;
+}
+
+/* Bannière notification */
+#alm-toast-wrap {
+  position: fixed; top: 12px; left: 50%; transform: translateX(-50%);
+  width: min(92vw, 390px); z-index: 99999; display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+}
+.alm-toast {
+  pointer-events: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 11px 14px; border-radius: 13px; background: rgba(12,16,28,.88);
+  backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.20);
+  color: #f8fafc; box-shadow: 0 10px 28px rgba(0,0,0,.45);
+}

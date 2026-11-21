@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <link rel="manifest" href="manifest.json?v=1795228688">
+  <meta name="theme-color" content="#0b0f19">
+  <script src="atm_public_mode.js?v=1795228688"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
+  <title>ATM PRO — Terminal</title>
+  <link rel="stylesheet" href="style.css?v=6" />
+  <link rel="stylesheet" href="v4.css?v=6" />
+  <link rel="stylesheet" href="v5_menus.css?v=6" />
+  <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="atm_boot_hook.js?v=1795191639"></script>
+
+  <link rel="stylesheet" href="atm_ux_override.css?v=1795178686">
+
+  <link rel="stylesheet" href="atm_alarms_clean.css?v=1795217671">
+
+  <link rel="stylesheet" href="atm_scanners_pro.css?v=1795220764">
+</head>
+<body>
+  <div id="wp-layer"><img id="wp-img" alt="" /><video id="wp-vid" autoplay loop muted playsinline></video><div id="wp-dim"></div></div>
+  <canvas id="bg-fx-canvas"></canvas>
+
+  <header id="app-header">
+    <div class="hdr-row1">
+      <div class="hdr-left">
+        <div class="hdr-brand" onclick="App.openModal('pair-modal')">
+          <span class="live-pulse"></span>
+          <b id="hud-title">XAUUSD·VT</b>
+          <span class="tf-pill-top" id="hud-tf-badge" onclick="event.stopPropagation();App.openModal('tf-modal')">1m</span>
+          <span class="timer-pill" id="main-timer">00:00</span>
+        </div>
+        <div class="hdr-sub">
+          <button type="button" class="ind-drop-btn" id="ind-drop-btn" onclick="App.toggleIndDrop()">
+            <span id="ind-cnt">4</span> <span id="ind-arr">⌄</span>
+          </button>
+          <div id="hud-ohlc">O -- H -- L -- C --</div>
+        </div>
+      </div>
+      <div id="mtf-bar">
+        <div class="tf-chip" id="ch-1m" onclick="App.setTF('1m')"><div class="tf-top"><span>M1</span><b id="dir-1m">•</b></div><span class="tf-cd" id="cd-1m">00:00</span><div class="tf-pr"><i id="pr-1m"></i></div></div>
+        <div class="tf-chip" id="ch-5m" onclick="App.setTF('5m')"><div class="tf-top"><span>M5</span><b id="dir-5m">•</b></div><span class="tf-cd" id="cd-5m">00:00</span><div class="tf-pr"><i id="pr-5m"></i></div></div>
+        <div class="tf-chip" id="ch-15m" onclick="App.setTF('15m')"><div class="tf-top"><span>M15</span><b id="dir-15m">•</b></div><span class="tf-cd" id="cd-15m">00:00</span><div class="tf-pr"><i id="pr-15m"></i></div></div>
+        <div class="tf-chip" id="ch-1h" onclick="App.setTF('1h')"><div class="tf-top"><span>H1</span><b id="dir-1h">•</b></div><span class="tf-cd" id="cd-1h">00:00</span><div class="tf-pr"><i id="pr-1h"></i></div></div>
+      </div>
+    </div>
+  </header>
+
+  <div id="ind-dropdown" style="display:none;"></div>
+
+  <main id="chart-wrap">
+    <div id="chart-wm"><b id="wm-pair">XAUUSD·VT</b><span id="wm-tf">1m</span></div>
+    <div id="dxy-pill" style="display:none;">DXY <b id="dxy-dir">--</b> • Corr <b id="dxy-corr">--</b> <span id="dxy-st">--</span></div>
+    <div id="wheel-popup" style="display:none;"></div>
+    <div id="draw-banner" style="display:none;"><span id="draw-hint">Mode dessin</span><button type="button" onclick="Draw.cancel()">Annuler</button></div>
+    <div id="draw-toolbar" style="display:none;">
+      <button type="button" class="dt-col" id="dt-col-btn" onclick="Draw.cycleColor()"></button>
+      <button type="button" id="dt-w-btn" onclick="Draw.cycleWidth()">2px</button>
+      <button type="button" id="dt-d-btn" onclick="Draw.cycleDash()">──</button>
+      <button type="button" onclick="Draw.openCfg()">⚙</button>
+      <button type="button" id="dt-lk-btn" onclick="Draw.toggleLock()">🔓</button>
+      <button type="button" class="dt-del" onclick="Draw.delSel()">🗑</button>
+      <button type="button" onclick="Draw.select(null)">✕</button>
+    </div>
+    <div id="chart"></div>
+    <canvas id="overlay-canvas"></canvas>
+  </main>
+
+  <div id="atm2-panel" style="display:none;"></div>
+
+  <nav id="bottom-bar">
+    <div class="bb-wheels">
+      <div class="bb-wbtn" id="wheel-pair"><span class="wl">ACTIF</span><div class="wv"><b id="bb-pair">XAUUSD·VT</b><small>⇅</small></div></div>
+      <div class="bb-wbtn tf" id="wheel-tf"><span class="wl">UT</span><div class="wv"><b id="bb-tf">1m</b><small>⇅</small></div></div>
+    </div>
+    <div class="bb-hscroll" id="bb-hscroll">
+      <button type="button" class="bb-act" id="bb-draw-btn" onclick="App.openModal('draw-modal')" title="Outils"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+      <button type="button" class="bb-act" id="bb-mag-btn" onclick="Draw.toggleMagnet()" title="Aimant"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M6 3v8a6 6 0 0 0 12 0V3"/><path d="M6 7h4M14 7h4"/></svg></button>
+      <button type="button" class="bb-act bb-scan-btn" id="bb-scan-btn" onclick="Scanner.toggle()" title="Scanner"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button>
+      <button type="button" class="bb-act" onclick="Draw.undo()" title="Retour arrière"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-2"/></svg></button>
+      <button type="button" class="bb-act" onclick="Draw.redo()" title="Retour avant"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9a5 5 0 0 0 0 10h2"/></svg></button>
+      <button type="button" class="bb-act" onclick="App.toggleFull()" title="Plein écran"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+      <button type="button" class="bb-act" onclick="App.toggleAtm2Panel()" title="ATM 2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg></button>
+      <button type="button" class="bb-act" onclick="App.openModal('theme-modal')" title="Thèmes"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+    </div>
+  </nav>
+
+  <div id="pair-modal" class="m-back" style="display:none;" onclick="App.closeModals()">
+    <div class="m-sheet" onclick="event.stopPropagation()">
+      <div class="v5-head-zone"><div class="v5-handle"></div><div class="m-hdr"><div><b>Marchés &amp; Actifs</b><small>Flux réel direct • CFD, Spot &amp; Futures</small></div><button type="button" class="m-x" onclick="App.closeModals()">✕</button></div></div>
+      <div class="v5-scroll">
+        <div class="v5-search-box"><span class="v5-search-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></span><input id="pair-q" class="m-inp" placeholder="Rechercher XAUUSD, BTC, ETH, SOL..." oninput="App.filterPairs();V5.syncSearchClr()" /><button type="button" id="pair-q-clr" class="v5-search-clr" onclick="V5.clearSearch()">✕</button></div>
+        <div class="m-tabs"><button type="button" class="m-tab on" onclick="App.setCat('all',this)">Tous</button><button type="button" class="m-tab" onclick="App.setCat('metals',this)">Métaux</button><button type="button" class="m-tab" onclick="App.setCat('crypto',this)">Crypto</button><button type="button" class="m-tab" onclick="App.setCat('futures',this)">Futures</button></div>
+        <div id="pair-list" class="m-list"></div>
+        <div class="calib-box"><div class="calib-lbl">Calibrage Broker MT5/VT (<span id="off-lbl">+7.24</span>)</div><div class="m-row"><input id="mt5-inp" type="number" step="0.01" placeholder="Prix MT5 ex: 3716.50" /><button type="button" class="btn-ok" onclick="App.calibrate()">Caler</button><button type="button" class="btn-gh" onclick="App.resetOff()">0</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tf-modal" class="m-back" style="display:none;" onclick="App.closeModals()">
+    <div class="m-sheet" onclick="event.stopPropagation()">
+      <div class="v5-head-zone"><div class="v5-handle"></div><div class="m-hdr"><div><b>Unité de temps</b><small>Favoris, Standard, Secondes &amp; Ticks</small></div><button type="button" class="m-x" onclick="App.closeModals()">✕</button></div></div>
+      <div class="v5-scroll">
+        <div class="sec-t" style="margin-top:0">FAVORIS</div><div id="tf-fav" class="tf-row"></div>
+        <div class="v5-seg" style="margin-top:12px"><button type="button" class="v5-seg-btn on" id="tft-std" onclick="V5.tfTab('std')">Standard</button><button type="button" class="v5-seg-btn" id="tft-sec" onclick="V5.tfTab('sec')">Secondes</button><button type="button" class="v5-seg-btn" id="tft-tck" onclick="V5.tfTab('tck')">Ticks</button></div>
+        <div id="tfp-std"><div id="tf-std" class="tf-grid"></div><div class="m-row" style="margin-top:10px;"><input id="tf-c-std" placeholder="Sur mesure: 2h, 90, 3J" /><button type="button" class="btn-ok" onclick="App.customTF('std')">OK</button></div></div>
+        <div id="tfp-sec" style="display:none"><div id="tf-sec" class="tf-grid"></div><div class="m-row" style="margin-top:10px;"><input id="tf-c-sec" type="number" placeholder="1 à 3600 sec" /><button type="button" class="btn-ok" onclick="App.customTF('sec')">OK</button></div></div>
+        <div id="tfp-tck" style="display:none"><div id="tf-tck" class="tf-grid"></div><div class="m-row" style="margin-top:10px;"><input id="tf-c-tck" type="number" placeholder="1 à 10000 ticks" /><button type="button" class="btn-ok" onclick="App.customTF('tick')">OK</button></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="draw-modal" class="m-back" style="display:none;" onclick="App.closeModals()">
+    <div class="m-sheet" onclick="event.stopPropagation()">
+      <div class="v5-head-zone"><div class="v5-handle"></div><div class="m-hdr"><div><b>Outils de Dessin</b><small>Fibonacci, Long/Short, Mesure &amp; Tracés</small></div><button type="button" class="m-x" onclick="App.closeModals()">✕</button></div></div>
+      <div class="v5-scroll"><div id="draw-grid-wrap"></div></div>
+    </div>
+  </div>
+
+  <div id="draw-cfg-modal" class="m-back" style="display:none;" onclick="App.closeModals()">
+    <div class="m-sheet" onclick="event.stopPropagation()">
+      <div class="v5-head-zone"><div class="v5-handle"></div><div class="m-hdr"><div><b id="dc-title">Paramètres</b><small>Réglages complets du tracé</small></div><button type="button" class="m-x" onclick="App.closeModals()">✕</button></div></div>
+      <div class="v5-scroll"><div id="dc-body"></div></div>
+    </div>
+  </div>
+
+  <div id="ind-modal" class="m-back" style="display:none;" onclick="App.closeModals()">
+    <div class="m-sheet" onclick="event.stopPropagation()">
+      <div class="v5-head-zone"><div class="v5-handle"></div><div class="m-hdr"><div><b>Réglages Indicateurs</b><small>ATM 2, Structure &amp; Pivots</small></div><button type="button" class="m-x" onclick="App.closeModals()">✕</button></div></div>
+      <div class="v5-scroll">
+        <div class="cfg-g">
+          <label>TP1 (R:R)<input id="cfg-tp1" type="number" step="0.1" value="0.5" onchange="Ind.saveCfg()" /></label>
+          <label>TP2 (R:R)<input id="cfg-tp2" type="number" step="0.5" value="3.0" onchange="Ind.saveCfg()" /></label>
+          <label>ATR Période<input id="cfg-alen" type="number" value="10" onchange="Ind.saveCfg()" /></label>
+          <label>Sensibilité Pivots<input id="cfg-sw" type="number" min="2" max="8" value="3" onchange="Ind.saveCfg()" /></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="theme-modal" class="m-back" style="display:none;" onclick="App.closeModals()">
+    <div class="m-sheet" onclick="event.stopPropagation()">
+      <div class="v5-head-zone"><div class="v5-handle"></div><div class="m-hdr"><div><b>Studio Apparence</b><small>Thèmes, Orage 4K 60 FPS &amp; Fond perso</small></div><button type="button" class="m-x" onclick="App.closeModals()">✕</button></div></div>
+      <div class="v5-scroll">
+        <div class="v5-seg">
+          <button type="button" class="v5-seg-btn on" id="tht-th" onclick="V5.thTab('th')">Thèmes</button>
+          <button type="button" class="v5-seg-btn" id="tht-fx" onclick="V5.thTab('fx')">Effets 4K</button>
+          <button type="button" class="v5-seg-btn" id="tht-wp" onclick="V5.thTab('wp')">Fond</button>
+        </div>
+        <div id="thp-th">
+          <div class="sec-t" style="margin-top:2px">AMBIANCES ANIMÉES (60 FPS)</div><div id="amb-grid" class="th-grid"></div>
+          <div class="sec-t">THÈMES CLASSIQUES</div><div id="base-th-grid" class="th-grid"></div>
+        </div>
+        <div id="thp-fx" style="display:none">
+          <div class="wp-card storm">
+            <div class="wp-hdr"><b>Orage &amp; Effets 4K 60 FPS</b><span class="live-dot">4K 60FPS</span></div>
+            <div class="fx-seg"><button type="button" class="fx-s on" id="fxi-high" onclick="ThemeFX.setIntensity('high')">Vivant</button><button type="button" class="fx-s" id="fxi-low" onclick="ThemeFX.setIntensity('low')">Discret</button><button type="button" class="fx-s" id="fxi-off" onclick="ThemeFX.setIntensity('off')">Coupé</button></div>
+            <div class="sl-row"><span>Pluie : <b id="st-rain-v">65%</b></span><input type="range" id="st-rain-sl" min="0" max="100" step="5" value="65" oninput="ThemeFX.setStorm('rain',this.value)" /></div>
+            <div class="sl-row"><span>Ondes de choc gouttes : <b id="st-rip-v">70%</b></span><input type="range" id="st-rip-sl" min="0" max="100" step="5" value="70" oninput="ThemeFX.setStorm('rip',this.value)" /></div>
+            <div class="sl-row"><span>Éclairs : <b id="st-bolt-v">45%</b></span><input type="range" id="st-bolt-sl" min="0" max="100" step="5" value="45" oninput="ThemeFX.setStorm('bolt',this.value)" /></div>
+            <button type="button" class="fx-cdl on" id="fx-cdl-btn" onclick="ThemeFX.toggleCandles()" style="margin-top:10px;width:100%">Bougies thème : ON</button>
+          </div>
+        </div>
+        <div id="thp-wp" style="display:none">
+          <div class="wp-card">
+            <div class="wp-hdr"><b>Fond Photo / Vidéo</b><button type="button" class="wp-clr" onclick="ThemeFX.clearWp()">Retirer</button></div>
+            <input type="file" id="wp-file" accept="image/*,video/*" style="display:none;" onchange="ThemeFX.pickWp(event)" />
+            <button type="button" class="wp-pick" onclick="document.getElementById('wp-file').click()">Choisir une Photo ou Vidéo</button>
+            <div class="sl-row"><span>Assombrir : <b id="wp-dim-v">45%</b></span><input type="range" id="wp-dim-sl" min="0" max="90" step="5" value="45" oninput="ThemeFX.setWpOpt('dim',this.value)" /></div>
+            <div class="sl-row"><span>Flou : <b id="wp-blur-v">0px</b></span><input type="range" id="wp-blur-sl" min="0" max="10" step="1" value="0" oninput="ThemeFX.setWpOpt('blur',this.value)" /></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="scanner-card" style="display:none;">
+    <div class="sc-wl-row"><div class="sc-wl-box"><span>WINS</span><b id="sc-wins" class="w">0</b></div><div class="sc-wl-box"><span>LOSSES</span><b id="sc-loss" class="l">0</b></div></div>
+    <div class="sc-hdr" id="sc-drag-hdr"><div><b>ATM HTF</b><small>Scanner IA</small></div><div class="sc-btns"><span class="live-dot" id="sc-live-tag">● LIVE</span><button type="button" onclick="Scanner.mini()">▬</button><button type="button" onclick="Scanner.toggle()">✕</button></div></div>
+    <div class="sc-meta"><div><span class="prem-b">PREMIUM</span> <span id="sc-cnt">• SCANS</span></div><div class="sc-mr"><span id="sc-pair">XAUUSD·VT</span> <b id="sc-pct">--%</b> <span class="sc-tm" id="sc-tm">00:00</span></div></div>
+    <div class="sc-stage"><div class="sc-score" id="sc-score-wrap"><b id="sc-score">--</b><small>/100</small></div><div class="sc-dir-lbl" id="sc-dir">WAIT</div><div class="sc-bar"><i id="sc-fill"></i><span class="sc-dot"></span></div></div>
+    <div class="sc-info-row"><div><small>QUALITY</small><b id="sc-qual">LOW</b></div><div class="sc-bars" id="sc-bars"><i class="b1"></i><i class="b2"></i><i class="b3"></i></div><div style="text-align:right;"><small>PATTERN</small><b id="sc-pat">No pattern</b></div></div>
+    <div class="sc-reason" id="sc-banner">⏳ Analyse HTF, SMC, S&amp;D &amp; DXY...</div>
+    <button type="button" class="sc-scan-btn" id="sc-refresh-btn" onclick="Scanner.manualScan()">SCAN</button>
+    <div class="sc-risk-hdr" onclick="Scanner.toggleRisk()"><span>RISK CALCULATOR &amp; CONFLUENCES</span><b id="sc-risk-arr">⌄</b></div>
+    <div id="sc-risk-body" style="display:none;">
+      <div class="sc-g4"><span id="sp-1m">M1 •</span><span id="sp-5m">M5 •</span><span id="sp-15m">M15 •</span><span id="sp-1h">H1 •</span></div>
+      <div class="sc-m4"><div><small>RSI</small><b id="sm-rsi">--</b></div><div><small>ADX</small><b id="sm-adx">--</b></div><div><small>SMC</small><b id="sm-smc">--</b></div><div><small>DXY</small><b id="sm-dxy">--</b></div></div>
+      <div class="sc-chips" id="sc-chips"></div>
+      <div class="sc-lvs"><div><small>PE</small><b id="sl-pe">---</b></div><div><small>SL</small><b id="sl-sl">---</b></div><div><small>TP</small><b id="sl-tp">---</b></div></div>
+      <div class="sim-box">
+        <div class="sim-top"><div><small>ÉQUITÉ ($)</small><b id="sim-eq">$10,000.00</b></div><div style="text-align:right;"><small id="sim-st">PNL LIVE</small><b id="sim-pnl">$0.00</b></div></div>
+        <div class="sim-info" id="sim-info">Prêt (0.50L)</div>
+        <div class="sim-act"><button type="button" id="sim-auto" onclick="Scanner.toggleAuto()">🤖 AUTO: OFF</button><button type="button" id="sim-exec" onclick="Scanner.execSim()">⚡ TESTER</button><button type="button" class="rst" onclick="Scanner.resetSim()">↺</button></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="market.js?v=6"></script>
+  <script src="v4_ui.js?v=6"></script>
+  <script src="themes.js?v=6"></script>
+  <script src="indicators.js?v=6"></script>
+  <script src="draw.js?v=6"></script>
+  <script src="scanner.js?v=6"></script>
+  <script src="v5_menus.js?v=6"></script>
+
+  <script src="atm_native_pro.js?v=1795191639"></script>
+
+  <script src="atm_alarms.js?v=1795217671"></script>
+
+  <script src="atm_scanners_pro.js?v=1795221410"></script>
+</body>
+</html>
