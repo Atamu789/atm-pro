@@ -478,7 +478,7 @@
               <span id="alm-tapi-st" style="font-size:10px;opacity:.85">ntfy.sh</span>
             </div>
             <div style="display:flex;gap:6px">
-              <input id="alm-ntfy-inp" class="alm-inp" type="text" placeholder="Canal ntfy.sh (ex: atamu-trade-987)" value="${prefs.ntfyTopic || ""}" style="font-size:11.5px;flex:1">
+              <input id="alm-ntfy-inp" class="alm-inp" type="text" placeholder="Canal ntfy.sh (ex: atm-trade-987)" value="${prefs.ntfyTopic || ""}" style="font-size:11.5px;flex:1">
               <button type="button" class="alm-qbtn" id="alm-push-test" style="padding:0 11px">Tester</button>
             </div>
             <div style="display:flex;gap:6px;margin-top:7px">
